@@ -344,10 +344,13 @@
 		$fullPayment = $_POST['fullPayment'];
 		$partialPayment = $_POST['partialPayment'];
 		$returnStatus = $_POST['returnStatus'];
+		$finalPendingBillAmount = $_POST['finalPendingBillAmount'];
+
+		
 		
 		$billingInfos2 = serialize($billingInfos);
 		$login = $_SESSION['login'];
-		$sql = "INSERT INTO invoices (customer, customerid, mobile, info, total, qty, finaltotal, date, status, state, city, address, pin, gst, dispatchThrough, vehicle, transaction, openingBalance, login, fullPayment, partialPayment, returnStatus) VALUES('$customername', '$customerId', '$mobile', '$billingInfos2', '$billTotal', '$billTotalQty', '$billFinalTotal', '".date('Y-m-d')."', '0', '$state', '$city', '$address', '$pincode', '$gst', '$dispatchThrough', '$vehicle', '$transaction', '0', '$login', '$fullPayment', '$partialPayment', '$returnStatus')";
+		$sql = "INSERT INTO invoices (customer, customerid, mobile, info, total, qty, finaltotal, date, status, state, city, address, pin, gst, dispatchThrough, vehicle, transaction, openingBalance, login, fullPayment, partialPayment, returnStatus, pendingAmount) VALUES('$customername', '$customerId', '$mobile', '$billingInfos2', '$billTotal', '$billTotalQty', '$billFinalTotal', '".date('Y-m-d')."', '0', '$state', '$city', '$address', '$pincode', '$gst', '$dispatchThrough', '$vehicle', '$transaction', '0', '$login', '$fullPayment', '$partialPayment', '$returnStatus', '$finalPendingBillAmount')";
 		$data = mysqli_query($db, $sql);
 		setcookie("modifyInvoice", $db->insert_id);
 		echo true;
@@ -363,6 +366,7 @@
 		$billFinalTotal = $_POST['billFinalTotal'];
 		$billingInfos2 = serialize($billingInfos);
 		$customername = $_POST['customername'];
+		$customerId = $_POST['customerId'];
 		$mobile = $_POST['mobile'];
 		$openingBalance = $_POST['openingBalance'];
 		$returnStatus = $_POST['returnStatus'];
@@ -377,7 +381,8 @@
 		// $openBal = $billFinalTotal + $openingBalance;
 		// Check if qty existed
 		//$qtyvalidation = qtyUpdation($billingInfos);
-		$sql = "UPDATE invoices SET returnStatus='$returnStatus', customer='$customername', fullPayment='$fullPayment', partialPayment='$partialPayment', mobile='$mobile', info='$billingInfos2', finaltotal='$billFinalTotal', total='$billTotal', qty='$billTotalQty', status='1', openingBalance='$openingBalance' WHERE id='$oldInvoiceId'";
+		$finalPendingBillAmount = $_POST['finalPendingBillAmount'];
+		$sql = "UPDATE invoices SET returnStatus='$returnStatus', customer='$customername', customerid='$customerId', fullPayment='$fullPayment', partialPayment='$partialPayment', mobile='$mobile', info='$billingInfos2', finaltotal='$billFinalTotal', total='$billTotal', qty='$billTotalQty', status='1', openingBalance='$openingBalance', pendingAmount='$finalPendingBillAmount' WHERE id='$oldInvoiceId'";
 		mysqli_query($db, $sql);
 		setcookie("modifyInvoice", "",  time() - 3600);
 		// reduceQuantity
@@ -419,9 +424,14 @@
 		$clearance_actualAmount = $_POST['clearance_actualAmount'];
 		$clearance_pendingAmount = $_POST['clearance_pendingAmount'];
 		$clearance_payingAmount = $_POST['clearance_payingAmount'];		
-		$clearance_pendingStatus = $_POST['clearance_pendingStatus'];		
+		$clearance_pendingStatus = $_POST['clearance_pendingStatus'];
+		$finalPendingBillAmount2 = $_POST['finalPendingBillAmount2'];
+		$customer = $_POST['customer'];
+		$customerId = $_POST['customerId'];
+		
+		
 		$login = $_SESSION['login'];
-		$sql = "INSERT INTO invoices (refId, finaltotal, partialPayment, transaction, status, login, date) VALUES('$clearance_refId', '$clearance_pendingAmount', '$clearance_payingAmount', '$clearance_transaction', '1', '$login', '".date('Y-m-d')."')";
+		$sql = "INSERT INTO invoices (refId, finaltotal, partialPayment, transaction, status, login, date, pendingAmount, customer, customerid) VALUES('$clearance_refId', '$clearance_pendingAmount', '$clearance_payingAmount', '$clearance_transaction', '1', '$login', '".date('Y-m-d')."', '$finalPendingBillAmount2', '$customer', '$customerId')";
 		$insert = mysqli_query($db, $sql);	
 		if( $clearance_pendingStatus == 1 ){
 			mysqli_query($db, "UPDATE invoices SET clearanceStatus='1' WHERE id='$clearance_refId'");

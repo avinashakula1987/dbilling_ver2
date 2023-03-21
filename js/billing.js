@@ -168,9 +168,9 @@ $(document).ready(function(){
 		}
 		
 		let partialPayment = $('#partialPayment').val();
-		$('#finalBillAmount').html(billFinalTotal);
+		$('#finalBillAmount').val(billFinalTotal);
 
-		partialPayment && $('#finalPendingBillAmount').html(billFinalTotal - partialPayment);
+		partialPayment && $('#finalPendingBillAmount').val(billFinalTotal - partialPayment);
 	}
 
 	$(document).on("keyup", "#partialPayment", function(){
@@ -218,6 +218,8 @@ $(document).ready(function(){
 		billTotal = 0;
 		billFinalTotal = 0;
 		billTotalQty = 0;
+		finalPendingBillAmount = $('#finalPendingBillAmount').val();
+		
 		for( i=1; i<=totalItemsInBills; i++ ){
 			if( $('#billingproduct_'+i).val() ){
 				billingInfo[i] = [0, 0, $('#billingproduct_'+i).val(), $('#billingproduct_'+i).attr('hiddenid'), $('#billingqty_'+i).val(), $('#billingprice_'+i).val(), $('#billingprice_'+i).attr('actual-price'), $('#billinggstprice_'+i).val(), $('#billingwithgstprice_'+i).val(), $('#billingactualprice_'+i).val(), $('#billingdiscount_'+i).val(), $('#billingchoosenqty_'+i).val()];
@@ -231,7 +233,7 @@ $(document).ready(function(){
 		billingInfos = JSON.stringify(billingInfo);		
 
 		if( confirm("Are you sure to submit ?") ){
-			$.post('processing.php', {returnStatus:returnStatus, customerId:customerId, customername:customername, mobile:mobile, state:state, city:city, address:address, pincode:pincode, gst:gst, dispatchThrough:dispatchThrough, vehicle:vehicle, transaction:transaction, billingInfos:billingInfos, billTotal:billTotal, billTotalQty:billTotalQty, billFinalTotal:billFinalTotal, openingBalance:openingBalance, fullPayment:fullPayment, partialPayment:partialPayment}, function(res){			
+			$.post('processing.php', {returnStatus:returnStatus, customerId:customerId, customername:customername, mobile:mobile, state:state, city:city, address:address, pincode:pincode, gst:gst, dispatchThrough:dispatchThrough, vehicle:vehicle, transaction:transaction, billingInfos:billingInfos, billTotal:billTotal, billTotalQty:billTotalQty, billFinalTotal:billFinalTotal, openingBalance:openingBalance, fullPayment:fullPayment, partialPayment:partialPayment, finalPendingBillAmount:finalPendingBillAmount}, function(res){			
 				if( res == true ){
 					location.href='modifyInvoice.php';
 				}else{
@@ -247,6 +249,7 @@ $(document).ready(function(){
 
 	$(document).on('click', '#updateBill', function(){		
 		customername = $('#customername').val();
+		customerId = $('#customername').attr('hiddenid');
 		mobile = $('#mobile').val();
 		openingBalance = $('#openingBalance').val();
         fullPayment = $('#fullPayment').val();		
@@ -264,6 +267,8 @@ $(document).ready(function(){
 		billTotal = 0;
 		billFinalTotal = 0;
 		billTotalQty = 0;
+		finalPendingBillAmount = $('#finalPendingBillAmount').val();
+
 		for( i=1; i<=totalItemsInBills; i++ ){
 			if( $('#billingproduct_'+i).val() ){
 				billingInfo[i] = [0, 0, $('#billingproduct_'+i).val(), $('#billingproduct_'+i).attr('hiddenid'), $('#billingqty_'+i).val(), $('#billingprice_'+i).val(), $('#billingprice_'+i).attr('actual-price'), $('#billinggstprice_'+i).val(), $('#billingwithgstprice_'+i).val(), $('#billingactualprice_'+i).val(), $('#billingdiscount_'+i).val(), $('#billingchoosenqty_'+i).val()];
@@ -274,7 +279,7 @@ $(document).ready(function(){
 		}
 		billingInfos = JSON.stringify(billingInfo);
 		if( confirm("Are you sure?") ){
-			$.post('processing.php', {returnStatus:returnStatus, customername:customername, mobile:mobile, updateBillingInfos:billingInfos, transaction:transaction, oldInvoiceId:oldInvoiceId, billTotal:billTotal, billTotalQty:billTotalQty, billFinalTotal:billFinalTotal, openingBalance:openingBalance, fullPayment:fullPayment, partialPayment:partialPayment}, function(res){			
+			$.post('processing.php', {returnStatus:returnStatus, customername:customername, customerId:customerId, mobile:mobile, updateBillingInfos:billingInfos, transaction:transaction, oldInvoiceId:oldInvoiceId, billTotal:billTotal, billTotalQty:billTotalQty, billFinalTotal:billFinalTotal, openingBalance:openingBalance, fullPayment:fullPayment, partialPayment:partialPayment, finalPendingBillAmount:finalPendingBillAmount}, function(res){			
 				if( res == true ){
 					location.href='invoice.php?invoice='+oldInvoiceId;
 				}else{
@@ -288,17 +293,43 @@ $(document).ready(function(){
 
 
 	// Pending Clearance
+	$(document).on('keyup', '#payingAmount', function(){		
+		// refId = $(this).attr('data-id');
+		clearance_transaction = $(this).val();
+		finalPendingBillAmount = $('#finalPendingBillAmount').val();
+		payingAmount = $('#payingAmount').val();
+		afterPay = finalPendingBillAmount - payingAmount;
+		if( afterPay>=0 ){
+			$('#finalPendingBillAmount2').val(afterPay);
+		}else{
+			$('#finalPendingBillAmount2').val(0);
+			$('#payingAmount').val(finalPendingBillAmount);
+
+		}	
+	});
 	$(document).on('click', '#partialPaymentUpdate', function(){		
+		refId = $(this).attr('data-id');
+		customer = $(this).attr('data-customer');
+		customerId = $(this).attr('data-customerid');
 		refId = $(this).attr('data-id');
 		clearance_transaction = $(this).attr('data-transaction');
 		actualAmount = $('#actualAmount').val();
 		pendingAmount = $('#pendingAmount').val();
 		payingAmount = $('#payingAmount').val();
 		pendingStatus = $('#pendingStatus').val();
+		finalPendingBillAmount = $('#finalPendingBillAmount').val();
+
+		finalPendingBillAmount2 = $('#finalPendingBillAmount2').val();
+
+		if( (finalPendingBillAmount == payingAmount) && (finalPendingBillAmount2 == 0) && pendingStatus=="0" ){
+			if( confirm("Are you sure to complete the transaction ? Hit `OK` if you agree otherwise Hit `Cancel` if you do it later") ){
+				pendingStatus = "1"
+			}
+		}
 		
 		
 		if( confirm("Are you sure?") ){
-			$.post('processing.php', {clearance_refId:refId, clearance_actualAmount:actualAmount, clearance_pendingAmount:pendingAmount, clearance_payingAmount:payingAmount, clearance_transaction:clearance_transaction, clearance_pendingStatus:pendingStatus}, function(res){			
+			$.post('processing.php', {clearance_refId:refId, customer:customer, customerId:customerId, clearance_actualAmount:actualAmount, clearance_pendingAmount:pendingAmount, clearance_payingAmount:payingAmount, clearance_transaction:clearance_transaction, clearance_pendingStatus:pendingStatus, finalPendingBillAmount2:finalPendingBillAmount2}, function(res){			
 				if( res == true ){
 					location.href='bills.php';
 				}else{

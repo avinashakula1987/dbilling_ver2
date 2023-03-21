@@ -45,6 +45,7 @@
 					$fullPayment = $res['fullPayment'];
 					$partialPayment = $res['partialPayment'];
 					$returnStatus = $res['returnStatus'];
+					$pendingAmount = $res['pendingAmount'];
 					$array = unserialize($res['info']);						
 				}else if( isset($_GET['modifyInvoice']) ){
 					$invoiceId = $_GET['modifyInvoice'];
@@ -64,6 +65,8 @@
 					$fullPayment = $res['fullPayment'];
 					$partialPayment = $res['partialPayment'];
 					$returnStatus = $res['returnStatus'];
+					$pendingAmount = $res['pendingAmount'];
+
 					$array = unserialize($res['info']);						
 				}else{
 					echo "
@@ -119,13 +122,7 @@
 					<div class='form-group col-md-3 col-sm-6 col-xs-12' style='display:none'>
 						Return <?php echo $returnStatus==1 ? "<input type='checkbox' id='returnStatus' checked='true' />" : "<input type='checkbox' id='returnStatus' />";  ?> 
 					</div>
-					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
-						<select id='fullPayment' class='form-control'>
-							<option value='<?php echo $fullPayment; ?>'><?php echo $fullPayment=="Full" ? "Cash & Carry" : "Credit"; ?></option>
-							<option value='Full'>Cash & Carry</option>
-							<option value='Partial'>Credit</option>
-						</select>
-					</div>
+					
 					
 					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
 						<input type='text' id='openingBalance' readonly disabled class='form-control' placeholder='Opening Balance' />
@@ -222,13 +219,22 @@
 			<div class='well'>
 				<div class='row'>
 					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
-						<input type='text' id='partialPayment' class='form-control' placeholder='Payment' value='<?php echo $partialPayment; ?>' />
+						<select id='fullPayment' class='form-control'>
+							<option value='<?php echo $fullPayment; ?>'><?php echo $fullPayment=="Full" ? "Cash & Carry" : "Credit"; ?></option>
+							<option value='Full'>Cash & Carry</option>
+							<option value='Partial'>Credit</option>
+						</select>
+					</div>
+					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
+						<input type='text' id='partialPayment' class='form-control' placeholder='Payment' <?php echo ($fullPayment=="Partial") ? "" : "disabled"; ?> value='<?php echo $partialPayment; ?>' />
 					</div>
 					<div class='form-group col-md-3 col-sm-3 col-xs-3'>
-						Total - <b id='finalBillAmount'><?php echo $finalActualPrice; ?></b>
+						<!-- Total - <b id='finalBillAmount'><?php echo $finalActualPrice; ?></b> -->
+						<input type='text' placeholder='Total' class='form-control' id='finalBillAmount' value="<?php echo $finalActualPrice; ?>" />
 					</div>
 					<div class='form-group col-md-3 col-sm-3 col-xs-3'>
-						Pending - <b id='finalPendingBillAmount'><?php echo $finalPendingAmount; ?></b>
+						<!-- Pending - <b id='finalPendingBillAmount'><?php echo $finalPendingAmount; ?></b> -->
+						<input type='text' placeholder='Pending' class='form-control' id='finalPendingBillAmount' value="<?php echo $finalPendingAmount; ?>" />
 					</div>
 				</div>
 			</div>		

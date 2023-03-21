@@ -3,7 +3,7 @@
 <?php include("headpart.php"); ?>
 
 <?php include("navbar.php"); ?>
-<div class='col-md-10'>
+<div class='col-md-10 col-sm-10'>
 	<div class='row'>
 		<div class="panel panel-primary mainbody">
 		  <div class="panel-heading">
@@ -58,12 +58,7 @@
 						Return 
 						<input type='checkbox' id='returnStatus' disabled />
 					</div>
-					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
-						<select id='fullPayment' class='form-control'>
-							<option value='Full'>Cash & Carry</option>
-							<option value='Partial'>Credit</option>
-						</select>
-					</div>
+					
 					
 					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
 						<input type='text' id='openingBalance' readonly disabled class='form-control' placeholder='Opening Balance' />
@@ -143,14 +138,20 @@
 			</div>	
 			<div class='well'>
 				<div class='row'>
+					<div class='form-group col-md-3 col-sm-6 col-xs-12'>
+						<select id='fullPayment' class='form-control'>
+							<option value='Full'>Cash & Carry</option>
+							<option value='Partial'>Credit</option>
+						</select>
+					</div>
 					<div class='form-group col-md-2 col-sm-2 col-xs-3'>
 						<input type='text' id='partialPayment' class='form-control' disabled placeholder='Paying' />
 					</div>
 					<div class='form-group col-md-3 col-sm-3 col-xs-3'>
-						Total - <b id='finalBillAmount'></b>
+						<input type='text' placeholder='Total' class='form-control' id='finalBillAmount' />
 					</div>
 					<div class='form-group col-md-3 col-sm-3 col-xs-3'>
-						Pending - <b id='finalPendingBillAmount'></b>
+						<input type='text' placeholder='Pending' class='form-control' id='finalPendingBillAmount' />
 					</div>
 				</div>
 			</div>	

@@ -470,6 +470,26 @@
 
 
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <!--<script type="text/javascript" src="../jquery.qrcode.min.js"></script>
+  --><script type="text/javascript" src="./src/jquery.qrcode.js"></script>
+  <script type="text/javascript" src="./src/qrcode.js"></script>
+  <div class="container" style="width:300px; margin:0 auto">
+    <div id="qrcodeTable"></div>
+  </div>
+  <script>
+    //jQuery('#qrcode').qrcode("this plugin is great");
+    jQuery('#qrcodeTable').qrcode({
+      render	: "table",
+      text	: "http://desireitservices.in/dbilling/invoice_qr.php?invoice=<?php echo $_GET['invoice'] ?>"
+    });
+
+  </script>
+
+
+
+
 
 		
 	

@@ -63,7 +63,8 @@
 						<th>Qty</th>
 						<th>Total</th>
 						<th>Paid</th>						
-						<th>Pending</th>						
+						<th>< Pending</th>						
+						<th>> Pending</th>						
 						<th>Actions</th>
 					</thead>
 					<tbody>
@@ -107,17 +108,29 @@
 										$customerInfo = "$customer<br>$mobile";
 									}						
 									$paid_pending_array = paid_pending($fullPayment, $payable, $partialPayment);
+									$paidSoFar = $fullPayment=="Partial" ? $partialPayment : $partialPayment + checkPendingBalance($id, $db);
+									$paidSoFar2 = $partialPayment + checkPendingBalance($id, $db);
+									$aa = $payable - $paidSoFar2;
+									if( $refId == "" ){
+										$pendingAmount = $payable - $paidSoFar;	
+									}else{
+										$pendingAmount = $total - $paidSoFar;
+									}
+									
+								
 									echo "<tr id='row_$id'>";
 									echo "<td>#$id</td>";
 									echo "<td>$customerInfo</td>";
 									echo "<td>$date</td>";
 									echo "<td>$qty</td>";
-									echo "<td>$total</td>";
-									echo "<td>".$paid_pending_array[0]."</td>";									
-									echo "<td class='text-danger'><strong>".$paid_pending_array[1]."</strong></td>";									
+									echo !$refId ? "<td>$total</td>" : "<td>-</td>";
+									echo $paidSoFar ? "<td>".$paidSoFar."</td>" : "<td>-</td>";									
+									echo !$refId ? "<td class='text-danger'><strong>$pendingAmount</strong></td>" : "<td>-</td>";
+									echo !$refId ? "<td class='text-danger'><strong>$aa</strong></td>" : "<td>-</td>";
+
 									echo "<td><a class='btn btn-xs btn-warning' href='modifyInvoice.php?modifyInvoice=$id'><span class='glyphicon glyphicon-pencil'></span></a> ";
 									echo "<a class='btn btn-xs btn-info' href='invoice.php?invoice=$id'><span class='glyphicon glyphicon glyphicon-paperclip'></span></a> ";									
-									echo " <a class='btn btn-xs btn-primary' href='partialPayment.php?invoice=$id'><span class='glyphicon glyphicon-plus'></span></a>";
+									echo !$refId ? "<a class='btn btn-xs btn-primary' href='partialPayment.php?invoice=$id'><span class='glyphicon glyphicon-plus'></span></a>" : "<a class='btn btn-xs btn-default' disabled ><span class='glyphicon glyphicon-plus'></span></a>";
 									if( $_SESSION['loginid'] == 1 ){
 										echo " <a href='$id' class='btn btn-xs btn-danger del_invoice' onclick='return false;'><span class='glyphicon glyphicon-remove'></span></a></td>";
 									}
@@ -133,7 +146,8 @@
 						<th>Qty</th>
 						<th>Total</th>
 						<th>Paid</th>						
-						<th>Pending</th>						
+						<th>< Pending</th>						
+						<th>> Pending</th>							
 						<th>Actions</th>						
 					</tfoot>
 				</table>

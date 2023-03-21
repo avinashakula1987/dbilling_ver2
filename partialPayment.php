@@ -64,15 +64,18 @@
 							$id = $res['id'];
 							$info = $res['info'];
 							$status = $res['status'];
+							$customer = $res['customer'];
+							$customerId = $res['customerid'];
 							$total = $res['total'];
 							$qty = $res['qty'];
 							$transaction = $res['transaction'];
 							$payable = $res['finaltotal'];
 							$fullPayment = $res['fullPayment'];
 							$partialPayment = $res['partialPayment'];									
+							$pendingAmountOriginal = $res['pendingAmount'];									
 							$paid_pending_array = paid_pending($fullPayment, $payable, $partialPayment);
-							$pendingAmount = $paid_pending_array[1];									
-							$pendingAmount = $paid_pending_array[1];
+							// $pendingAmount = $paid_pending_array[1];									
+							// $pendingAmount = $paid_pending_array[1];
 							$paidSoFar = $partialPayment + checkPendingBalance($invoiceId, $db);
 							$pendingAmount = $payable - $paidSoFar;	
 							
@@ -83,12 +86,19 @@
 							Actual Amount - <input type="text" id="actualAmount" placeholder="Actual Amount" value="<?= $payable; ?>" disabled class="form-control">
 							Paid So far - <input type="text" id="pendingAmount" placeholder="Pending" value="<?= $paidSoFar; ?>" disabled class="form-control">
 							<?php if((float)$paidSoFar!=(float)$payable){  ?>
-							Paying now - <input type="text" id="payingAmount" placeholder="Payment" value="<?= $pendingAmount; ?>" class="form-control">							
+							<!-- Paying now - <input type="text" id="payingAmount" placeholder="Payment" value="<?= $pendingAmount; ?>" class="form-control">							 -->
+							Actual Pending - 
+							<input type='text' placeholder='Pending' class='form-control' id='finalPendingBillAmount' disabled value="<?php echo $pendingAmount; ?>" />
+							Paying now - <input type="text" id="payingAmount" placeholder="Payment" value="<?= $pendingAmount; ?>" class="form-control">						
+							Pending After Pay- 
+							<input type='text' placeholder='Pending' class='form-control' id='finalPendingBillAmount2' readonly value="0" />
+							
+							Status -
 							<select id="pendingStatus" class="form-control">
-								<option value='1'>Completed</option>
 								<option value='0'>Partial</option>
+								<option value='1'>Completed</option>								
 							</select><br/>
-							<button class="btn btn-primary" id="partialPaymentUpdate" data-id="<?= $invoiceId; ?>" data-transaction="<?= $transaction; ?>">Payment Update</button>
+							<button class="btn btn-primary" id="partialPaymentUpdate" data-customer="<?= $customer; ?>" data-customerid="<?= $customerId; ?>" data-id="<?= $invoiceId; ?>" data-transaction="<?= $transaction; ?>">Payment Update</button>
 							<?php }else{ echo "Transaction Completed!"; }  ?>
 								
 						</div>	

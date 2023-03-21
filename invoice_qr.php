@@ -1,6 +1,5 @@
 <?php include("database.php"); ?>
 <?php include("utils.php"); ?>
-<?php include("session.php"); ?>
 <?php
 
 	if( isset($_POST['billmobile']) && isset($_POST['currentlypayingnow']) ){

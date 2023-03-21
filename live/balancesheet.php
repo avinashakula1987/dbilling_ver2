@@ -135,7 +135,7 @@
 						
 						<tbody>
 							<tr>
-								<td colspan='8' class='text-left'><b id="byselection"></b></td>
+								<td colspan='7' class='text-left'><b id="byselection"></b></td>
 							</tr>
 							<tr>
 								<td>Date</td>
@@ -144,8 +144,7 @@
 								<td>Vch No</td>							
 								<td>Total</td>
 								<td>Paid</td>
-								<td>Prev. Pending</td>
-								<td>>Curr. Pending</td>
+								<td>Pending</td>
 							</tr>
 							<?php 
 								$date1 = date('Y-m-01');
@@ -192,7 +191,6 @@
 								$tot = 0;
 								$paidd = 0;
 								$pendd = 0;
-								$openingBalance = 0;
 								while( $res = mysqli_fetch_array($get) ){
 
 									$sno++;
@@ -240,7 +238,7 @@
 									if( $openBalance == true ){
 										$openingBalance = $res['openingBalance'];
 										$openText = "<tr>
-											<td colspan='8'>Opening Balance: <b>$openingBalance</b></td>
+											<td colspan='7'>Opening Balance: <b>$openingBalance</b></td>
 										</tr>";									
 									}
 									$openBalance = false; 
@@ -261,18 +259,9 @@
 										$pendingAmount = 0;
 									}
 
-									
-									$paidSoFar2 = $partialPayment + checkPendingBalance($id, $db);
-									
-									if( $res['refId'] == 0 ){
-										$aa = $totalpurchases - $paidSoFar2;	
-									}else{
-										$aa = 0;
-									}
 									$tot = $tot + $totalpurchases;		
 									$paidd = $paidd + $paidSoFar;		
-									// $pendd = $pendd + $pendingAmount;		
-									$pendd = $tot - $paidd;		
+									$pendd = $pendd + $pendingAmount;		
 
 									// $date = date($res['date'], "y-M-d");
 									echo $openText;	
@@ -285,15 +274,14 @@
 										<td>$totalpurchases</td>
 										<td>$paidSoFar</td>
 										<td>$pendingAmount</td>
-										<td>$aa</td>
 
 									</tr>";
 									
 									$openText = "";
 								}
-								$tott = $tot + $openingBalance ;
+								$tott = $tot + $openingBalance;
 								echo  "<tr>
-										<td colspan='8'>Total: <b>$tot</b>, Paid So far: <b>$paidd</b>, Pending: <b>$pendd</b>, Closed Balance: <b>$tott</b></td>
+										<td colspan='6'>Total: <b>$tot</b>, Paid So far: <b>$paidd</b>, Pending: <b>$pendd</b>, Closed Balance: <b>$tott</b></td>
 									</tr>";
 							?>					
 						</tbody>
